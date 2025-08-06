@@ -296,7 +296,11 @@ const App: React.FC = () => {
       case 'missing-skin':
         return !champion.hasSkin;
       case 'has-shard':
-        return champion.hasShard && !champion.hasSkin;
+        return champion.hasShard;
+      case 'missing-skin-has-shard':
+        return !champion.hasSkin && champion.hasShard;
+      case 'has-skin-has-shard':
+        return champion.hasSkin && champion.hasShard;
       default:
         return true;
     }
@@ -321,6 +325,10 @@ const App: React.FC = () => {
   const handleDeselectAll = () => {
     setSelectedChampions(new Set<string>());
   };
+
+  // Calculate progress for skins and shards
+  const skinProgress = champions.filter(champ => champ.hasSkin).length;
+  const shardProgress = champions.filter(champ => champ.hasShard).length;
 
 
 
@@ -376,6 +384,8 @@ const App: React.FC = () => {
         onFilterChange={setFilterType}
         championCount={filteredChampions.length}
         totalCount={champions.length}
+        skinProgress={skinProgress}
+        shardProgress={shardProgress}
         onQuickFillSkin={() => handleQuickFill('skin')}
         onQuickFillShard={() => handleQuickFill('shard')}
       />

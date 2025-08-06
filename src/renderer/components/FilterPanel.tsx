@@ -1,4 +1,5 @@
 import React from 'react';
+import ProgressBar from './ProgressBar';
 
 interface FilterPanelProps {
   searchTerm: string;
@@ -7,6 +8,8 @@ interface FilterPanelProps {
   onFilterChange: (type: 'all' | 'missing-skin' | 'has-shard' | 'missing-skin-has-shard' | 'has-skin-has-shard') => void;
   championCount: number;
   totalCount: number;
+  skinProgress: number;
+  shardProgress: number;
   onQuickFillSkin?: () => void;
   onQuickFillShard?: () => void;
 }
@@ -18,6 +21,8 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onFilterChange,
   championCount,
   totalCount,
+  skinProgress,
+  shardProgress,
   onQuickFillSkin,
   onQuickFillShard
 }) => {
@@ -70,6 +75,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         <div className="champion-count">
           Showing {championCount} of {totalCount} champions
         </div>
+        
+        <ProgressBar 
+          skinProgress={skinProgress}
+          shardProgress={shardProgress}
+          totalChampions={totalCount}
+        />
         
         {(onQuickFillSkin || onQuickFillShard) && (
           <div className="quick-fill-buttons">
