@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ChampionList from './components/ChampionList';
 import Header from './components/Header';
-import BulkEditPanel from './components/BulkEditPanel';
 import FilterPanel from './components/FilterPanel';
 import KeyboardShortcuts from './components/KeyboardShortcuts';
 import NotificationBanner, { Notification } from './components/NotificationBanner';
@@ -14,9 +13,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState<'all' | 'missing-skin' | 'has-shard' | 'missing-skin-has-shard' | 'has-skin-has-shard'>('all');
-  const [bulkEditMode, setBulkEditMode] = useState(false);
-  const [selectedChampions, setSelectedChampions] = useState<Set<string>>(new Set());
+  const [filterType, setFilterType] = useState<'all' | 'missing-skin' | 'missing-shard' | 'has-shard' | 'missing-skin-has-shard' | 'has-skin-has-shard' | 'missing-skin-missing-shard'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [notification, setNotification] = useState<Notification | null>(null);
   const [confirmationDialog, setConfirmationDialog] = useState<{
@@ -99,25 +96,7 @@ const App: React.FC = () => {
     }
   };
 
-  const handleBulkUpdate = async (hasSkin: boolean, hasShard: boolean) => {
-    try {
-      const championIds = Array.from(selectedChampions);
-      await window.electronAPI.bulkUpdateChampions(championIds, hasSkin, hasShard);
-      
-      setChampions(prev => 
-        prev.map(champ => 
-          selectedChampions.has(champ.id)
-            ? { ...champ, hasSkin, hasShard }
-            : champ
-        )
-      );
-      
-      setSelectedChampions(new Set<string>());
-      setBulkEditMode(false);
-    } catch (err) {
-      console.error('Failed to bulk update champions:', err);
-    }
-  };
+
 
   const handleRefreshChampions = async () => {
     try {
@@ -295,36 +274,22 @@ const App: React.FC = () => {
     switch (filterType) {
       case 'missing-skin':
         return !champion.hasSkin;
+      case 'missing-shard':
+        return !champion.hasShard;
       case 'has-shard':
         return champion.hasShard;
       case 'missing-skin-has-shard':
         return !champion.hasSkin && champion.hasShard;
       case 'has-skin-has-shard':
         return champion.hasSkin && champion.hasShard;
+      case 'missing-skin-missing-shard':
+        return !champion.hasSkin && !champion.hasShard;
       default:
         return true;
     }
   });
 
-  const handleChampionSelect = (championId: string) => {
-    setSelectedChampions(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(championId)) {
-        newSet.delete(championId);
-      } else {
-        newSet.add(championId);
-      }
-      return newSet;
-    });
-  };
 
-  const handleSelectAll = () => {
-    setSelectedChampions(new Set(filteredChampions.map(champ => champ.id)));
-  };
-
-  const handleDeselectAll = () => {
-    setSelectedChampions(new Set<string>());
-  };
 
   // Calculate progress for skins and shards
   const skinProgress = champions.filter(champ => champ.hasSkin).length;
@@ -357,52 +322,24 @@ const App: React.FC = () => {
 
   return (
     <div className="app">
-             <Header 
-         onRefresh={handleRefreshChampions}
-         onExport={handleExportData}
-         onImport={handleImportData}
-
-         onBulkEditToggle={() => setBulkEditMode(!bulkEditMode)}
-         onReset={handleResetAll}
-         onShowHelp={() => {
-           // This will be handled by the KeyboardShortcuts component
-           // We'll trigger it by simulating Ctrl+H
-           const event = new KeyboardEvent('keydown', {
-             key: 'h',
-             ctrlKey: true,
-             bubbles: true
-           });
-           window.dispatchEvent(event);
-         }}
-         bulkEditMode={bulkEditMode}
-       />
+                   <Header 
+        onImport={handleImportData}
+        onExport={handleExportData}
+        onResetAll={handleResetAll}
+      />
       
       <FilterPanel
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        filterType={filterType}
-        onFilterChange={setFilterType}
         championCount={filteredChampions.length}
         totalCount={champions.length}
         skinProgress={skinProgress}
         shardProgress={shardProgress}
-        onQuickFillSkin={() => handleQuickFill('skin')}
-        onQuickFillShard={() => handleQuickFill('shard')}
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+        filterType={filterType}
+        onFilterChange={setFilterType}
       />
       
-      {bulkEditMode && (
-        <BulkEditPanel
-          selectedCount={selectedChampions.size}
-          totalCount={filteredChampions.length}
-          onSelectAll={handleSelectAll}
-          onDeselectAll={handleDeselectAll}
-          onBulkUpdate={handleBulkUpdate}
-          onCancel={() => {
-            setBulkEditMode(false);
-            setSelectedChampions(new Set<string>());
-          }}
-        />
-      )}
+
       
       <div className="view-controls">
         <button 
@@ -424,16 +361,12 @@ const App: React.FC = () => {
              <ChampionList
          champions={champions}
          onChampionUpdate={handleChampionUpdate}
-         bulkEditMode={bulkEditMode}
-         selectedChampions={selectedChampions}
-         onChampionSelect={handleChampionSelect}
          viewMode={viewMode}
          searchTerm={searchTerm}
          filterType={filterType}
        />
       
              <KeyboardShortcuts
-         onToggleBulkEdit={() => setBulkEditMode(!bulkEditMode)}
          onQuickFillSkin={() => handleQuickFill('skin')}
          onQuickFillShard={() => handleQuickFill('shard')}
          onReset={handleResetAll}

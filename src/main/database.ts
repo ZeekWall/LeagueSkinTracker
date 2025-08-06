@@ -113,6 +113,28 @@ export class DatabaseManager {
     transaction();
   }
 
+  async upsertFullChampions(champions: Champion[]): Promise<void> {
+    const query = `
+      INSERT OR REPLACE INTO champions (id, name, title, hasSkin, hasShard, imageUrl, lastUpdated)
+      VALUES (?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+    `;
+    
+    const stmt = this.db.prepare(query);
+    const transaction = this.db.transaction(() => {
+      champions.forEach(champion => {
+        stmt.run(
+          champion.id, 
+          champion.name, 
+          champion.title, 
+          champion.hasSkin ? 1 : 0, 
+          champion.hasShard ? 1 : 0, 
+          champion.imageUrl
+        );
+      });
+    });
+    transaction();
+  }
+
   async getPatchInfo(): Promise<PatchInfo | null> {
     const query = 'SELECT version, patchNotesUrl FROM patch_info ORDER BY lastUpdated DESC LIMIT 1';
     const row = this.db.prepare(query).get() as any;

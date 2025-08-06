@@ -5,12 +5,9 @@ import { Champion } from '../../main/database';
 interface ChampionListProps {
   champions: Champion[];
   onChampionUpdate: (championId: string, hasSkin: boolean, hasShard: boolean) => void;
-  bulkEditMode: boolean;
-  selectedChampions: Set<string>;
-  onChampionSelect: (championId: string) => void;
   viewMode: 'grid' | 'list';
   searchTerm: string;
-  filterType: 'all' | 'missing-skin' | 'has-shard' | 'missing-skin-has-shard' | 'has-skin-has-shard';
+  filterType: 'all' | 'missing-skin' | 'missing-shard' | 'has-shard' | 'missing-skin-has-shard' | 'has-skin-has-shard' | 'missing-skin-missing-shard';
 }
 
 type SortOption = 'name' | 'skin-status' | 'shard-status' | 'name-desc' | 'skin-status-desc' | 'shard-status-desc';
@@ -18,9 +15,6 @@ type SortOption = 'name' | 'skin-status' | 'shard-status' | 'name-desc' | 'skin-
 const ChampionList: React.FC<ChampionListProps> = ({
   champions,
   onChampionUpdate,
-  bulkEditMode,
-  selectedChampions,
-  onChampionSelect,
   viewMode,
   searchTerm,
   filterType
@@ -38,12 +32,16 @@ const ChampionList: React.FC<ChampionListProps> = ({
       switch (filterType) {
         case 'missing-skin':
           return !champion.hasSkin;
+        case 'missing-shard':
+          return !champion.hasShard;
         case 'has-shard':
-          return champion.hasShard && !champion.hasSkin;
+          return champion.hasShard;
         case 'missing-skin-has-shard':
           return !champion.hasSkin && champion.hasShard;
         case 'has-skin-has-shard':
           return champion.hasSkin && champion.hasShard;
+        case 'missing-skin-missing-shard':
+          return !champion.hasSkin && !champion.hasShard;
         default:
           return true;
       }
@@ -122,19 +120,8 @@ const ChampionList: React.FC<ChampionListProps> = ({
           {filteredAndSortedChampions.map((champion, index) => (
             <div
               key={champion.id}
-              className={`champion-list-item ${selectedChampions.has(champion.id) ? 'selected' : ''} ${showCompact ? 'compact' : ''}`}
-              onClick={() => bulkEditMode && onChampionSelect(champion.id)}
+              className={`champion-list-item ${showCompact ? 'compact' : ''}`}
             >
-              {/* Bulk Selection Checkbox */}
-              {bulkEditMode && (
-                <input
-                  type="checkbox"
-                  className="list-checkbox"
-                  checked={selectedChampions.has(champion.id)}
-                  onChange={() => onChampionSelect(champion.id)}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              )}
 
               <div className="champion-list-content">
                 <div className="champion-list-info">
@@ -154,42 +141,29 @@ const ChampionList: React.FC<ChampionListProps> = ({
                 </div>
 
                 <div className="champion-list-actions">
-                  {!bulkEditMode ? (
-                    // Interactive Status Toggles
-                    <div className="list-status-toggles">
-                      <button
-                        className={`list-status-toggle skin ${champion.hasSkin ? 'active' : ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSkinToggle(champion.id, champion.hasSkin);
-                        }}
-                        title={champion.hasSkin ? 'Remove skin ownership' : 'Mark as owning skin'}
-                      >
-                        {champion.hasSkin ? '✅' : '⬜'} {!showCompact && 'Skin'}
-                      </button>
-                      
-                      <button
-                        className={`list-status-toggle shard ${champion.hasShard ? 'active' : ''}`}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleShardToggle(champion.id, champion.hasShard);
-                        }}
-                        title={champion.hasShard ? 'Remove shard status' : 'Mark as having shard'}
-                      >
-                        {champion.hasShard ? '💎' : '○'} {!showCompact && 'Shard'}
-                      </button>
-                    </div>
-                  ) : (
-                    // Status Indicators for Bulk Mode
-                    <div className="champion-list-status">
-                      <div className={`status-indicator ${champion.hasSkin ? 'has-skin' : 'no-skin'}`}>
-                        {champion.hasSkin ? '✓' : '✗'}
-                      </div>
-                      <div className={`status-indicator ${champion.hasShard ? 'has-shard' : 'no-shard'}`}>
-                        {champion.hasShard ? '💎' : '○'}
-                      </div>
-                    </div>
-                  )}
+                  <div className="list-status-toggles">
+                    <button
+                      className={`list-status-toggle skin ${champion.hasSkin ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleSkinToggle(champion.id, champion.hasSkin);
+                      }}
+                      title={champion.hasSkin ? 'Remove skin ownership' : 'Mark as owning skin'}
+                    >
+                      {champion.hasSkin ? '✅' : '⬜'} {!showCompact && 'Skin'}
+                    </button>
+                    
+                    <button
+                      className={`list-status-toggle shard ${champion.hasShard ? 'active' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleShardToggle(champion.id, champion.hasShard);
+                      }}
+                      title={champion.hasShard ? 'Remove shard status' : 'Mark as having shard'}
+                    >
+                      {champion.hasShard ? '💎' : '○'} {!showCompact && 'Shard'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -216,9 +190,6 @@ const ChampionList: React.FC<ChampionListProps> = ({
             key={champion.id}
             champion={champion}
             onUpdate={onChampionUpdate}
-            bulkEditMode={bulkEditMode}
-            isSelected={selectedChampions.has(champion.id)}
-            onSelect={() => onChampionSelect(champion.id)}
           />
         ))}
       </div>

@@ -4,17 +4,11 @@ import { Champion } from '../../main/database';
 interface ChampionCardProps {
   champion: Champion;
   onUpdate: (championId: string, hasSkin: boolean, hasShard: boolean) => void;
-  bulkEditMode: boolean;
-  isSelected: boolean;
-  onSelect: () => void;
 }
 
 const ChampionCard: React.FC<ChampionCardProps> = ({
   champion,
-  onUpdate,
-  bulkEditMode,
-  isSelected,
-  onSelect
+  onUpdate
 }) => {
   const handleSkinToggle = () => {
     onUpdate(champion.id, !champion.hasSkin, champion.hasShard);
@@ -24,21 +18,11 @@ const ChampionCard: React.FC<ChampionCardProps> = ({
     onUpdate(champion.id, champion.hasSkin, !champion.hasShard);
   };
 
-  const handleSelectionChange = () => {
-    onSelect();
-  };
+
 
   return (
-    <div className={`champion-card ${isSelected ? 'selected' : ''}`}>
+    <div className="champion-card">
       <div className="champion-header">
-        {bulkEditMode && (
-          <input
-            type="checkbox"
-            className="checkbox"
-            checked={isSelected}
-            onChange={handleSelectionChange}
-          />
-        )}
         
         {champion.imageUrl && (
           <img
@@ -58,23 +42,21 @@ const ChampionCard: React.FC<ChampionCardProps> = ({
         </div>
       </div>
       
-      {!bulkEditMode && (
-        <div className="champion-actions">
-          <button
-            className={`status-toggle skin ${champion.hasSkin ? 'active' : ''}`}
-            onClick={handleSkinToggle}
-          >
-            {champion.hasSkin ? '✅' : '⬜'} Own Skin
-          </button>
-          
-          <button
-            className={`status-toggle shard ${champion.hasShard ? 'active' : ''}`}
-            onClick={handleShardToggle}
-          >
-            {champion.hasShard ? '🎁' : '⬜'} Has Shard
-          </button>
-        </div>
-      )}
+      <div className="champion-actions">
+        <button
+          className={`status-toggle skin ${champion.hasSkin ? 'active' : ''}`}
+          onClick={handleSkinToggle}
+        >
+          {champion.hasSkin ? '✅' : '⬜'} Own Skin
+        </button>
+        
+        <button
+          className={`status-toggle shard ${champion.hasShard ? 'active' : ''}`}
+          onClick={handleShardToggle}
+        >
+          {champion.hasShard ? '🎁' : '⬜'} Has Shard
+        </button>
+      </div>
     </div>
   );
 };

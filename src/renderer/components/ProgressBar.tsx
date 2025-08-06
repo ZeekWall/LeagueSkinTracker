@@ -12,10 +12,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ skinProgress, shardProgress, 
 
   return (
     <div className="progress-container">
+      {/* Skin Progress */}
       <div className="progress-section">
         <div className="progress-label">
           <span className="progress-icon">🎨</span>
-          <span>Skins: {skinProgress}/{totalChampions}</span>
+          <span>Skins</span>
+        </div>
+        <div className="progress-stats">
+          <span>{skinProgress}/{totalChampions}</span>
           <span className="progress-percentage">({skinPercentage.toFixed(1)}%)</span>
         </div>
         <div className="progress-bar">
@@ -26,10 +30,14 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ skinProgress, shardProgress, 
         </div>
       </div>
       
+      {/* Shard Progress */}
       <div className="progress-section">
         <div className="progress-label">
           <span className="progress-icon">💎</span>
-          <span>Shards: {shardProgress}/{totalChampions}</span>
+          <span>Shards</span>
+        </div>
+        <div className="progress-stats">
+          <span>{shardProgress}/{totalChampions}</span>
           <span className="progress-percentage">({shardPercentage.toFixed(1)}%)</span>
         </div>
         <div className="progress-bar">

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
 interface KeyboardShortcutsProps {
-  onToggleBulkEdit: () => void;
   onQuickFillSkin: () => void;
   onQuickFillShard: () => void;
   onReset: () => void;
 }
 
 const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
-  onToggleBulkEdit,
   onQuickFillSkin,
   onQuickFillShard,
   onReset
@@ -23,12 +21,6 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
       }
 
       switch (e.key.toLowerCase()) {
-        case 'b':
-          if (e.ctrlKey || e.metaKey) {
-            e.preventDefault();
-            onToggleBulkEdit();
-          }
-          break;
         case 's':
           if (e.ctrlKey || e.metaKey) {
             e.preventDefault();
@@ -58,7 +50,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onToggleBulkEdit, onQuickFillSkin, onQuickFillShard, onReset]);
+  }, [onQuickFillSkin, onQuickFillShard, onReset]);
 
   if (!showShortcuts) {
     return null;
@@ -76,10 +68,7 @@ const KeyboardShortcuts: React.FC<KeyboardShortcutsProps> = ({
         </button>
       </div>
       <div className="shortcuts-list">
-        <div className="shortcut-item">
-          <kbd>Ctrl/Cmd + B</kbd>
-          <span>Toggle Bulk Edit Mode</span>
-        </div>
+
         <div className="shortcut-item">
           <kbd>Ctrl/Cmd + S</kbd>
           <span>Quick Fill Skins (for filtered)</span>

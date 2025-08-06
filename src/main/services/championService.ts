@@ -110,8 +110,8 @@ export class ChampionService {
       throw new Error('Invalid data format: missing or invalid champions array');
     }
 
-    // Import champions data
-    await this.dbManager.upsertChampions(data.champions);
+    // Import champions data with full skin/shard status
+    await this.dbManager.upsertFullChampions(data.champions);
 
     // Import patch info if available
     if (data.patchInfo && data.patchInfo.version) {
