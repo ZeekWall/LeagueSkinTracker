@@ -1,46 +1,129 @@
-# Getting Started with Create React App
+# LoL Skin Tracker v2.0
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern Electron application for tracking your League of Legends champion skins. Built with React, TypeScript, and Vite for optimal performance.
 
-## Available Scripts
+## 📥 Download
 
-In the project directory, you can run:
+**[Download Latest Release](https://github.com/ZeekWall/LeagueSkinTracker/releases/latest)** - Get the portable executable for Windows
 
-### `npm start`
+Or download directly: [`LoL Skin Tracker-v2.0.0-x64.exe`](dist/LoL%20Skin%20Tracker-v2.0.0-x64.exe)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## ✨ Features
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- Track owned champion skins
+- Filter and search champions
+- Progress tracking and statistics
+- Modern, responsive UI with Tailwind CSS
+- Offline data persistence with Electron Store
+- Portable executable - no installation required
 
-### `npm test`
+## 🛠️ Development
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
 
-### `npm run build`
+- **Node.js 20+** (Required for modern dependencies)
+- npm or yarn
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Quick Start
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```bash
+# Clone the repository
+git clone https://github.com/ZeekWall/LeagueSkinTracker.git
+cd LeagueSkinTracker
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Install dependencies (skip problematic scripts)
+npm install --ignore-scripts
 
-### `npm run eject`
+# Start development server
+npm start
+# Opens Vite dev server at http://localhost:5173
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+# Run Electron in development
+npm run electron-dev
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Building
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```bash
+# Build React app
+npm run build
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+# Build portable executable
+npm run dist:portable
 
-## Learn More
+# The executable will be created in: dist/LoL Skin Tracker-v2.0.0-x64.exe
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Build Script (Recommended)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+For reliable building, use the included PowerShell script:
+```bash
+powershell -ExecutionPolicy Bypass -File build-portable.ps1
+```
+
+## 🧪 Testing
+
+```bash
+# Run end-to-end tests
+npm run test:e2e
+
+# Run tests with UI
+npm run test:e2e:ui
+
+# Debug tests
+npm run test:e2e:debug
+```
+
+## 🏗️ Project Structure
+
+```
+├── src/                    # React source code
+│   ├── components/         # React components
+│   ├── hooks/             # Custom hooks
+│   ├── services/          # API and data services
+│   └── shared/            # Types and constants
+├── electron/              # Electron main process
+├── tests/                 # Playwright E2E tests
+├── public/                # Static assets
+└── dist/                  # Built executable
+```
+
+## 🔧 Tech Stack
+
+- **Frontend**: React 18, TypeScript 5, Tailwind CSS
+- **Build Tool**: Vite 6 (fast development and building)
+- **Desktop**: Electron 32
+- **Testing**: Playwright
+- **Data**: Electron Store, Axios for API calls
+
+## 📝 Scripts
+
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start Vite dev server |
+| `npm run build` | Build React app for production |
+| `npm run electron` | Run Electron (requires dev server) |
+| `npm run electron-dev` | Run both dev server and Electron |
+| `npm run dist:portable` | Build portable Windows executable |
+| `npm run test:e2e` | Run Playwright tests |
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes
+4. Run tests: `npm run test:e2e`
+5. Build to ensure it works: `npm run dist:portable`
+6. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🐛 Issues
+
+Found a bug or have a feature request? Please [open an issue](https://github.com/ZeekWall/LeagueSkinTracker/issues/new).
+
+## 📊 MCP Integration
+
+This project includes Model Context Protocol (MCP) server integration for automated testing. See [CLAUDE.md](CLAUDE.md) for details.

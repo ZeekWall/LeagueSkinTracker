@@ -3,7 +3,10 @@ node_modules/
 
 # Build outputs
 build/
-dist/
+dist/win-unpacked/
+dist/builder-debug.yml
+# Keep the final executable for direct download
+!dist/*.exe
 
 # Test results
 test-results/
@@ -29,7 +32,34 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+pnpm-debug.log*
 
 # Cache
 .npm
+.pnpm
 .eslintcache
+.vite
+
+# TypeScript
+*.tsbuildinfo
+
+# Electron builder cache
+.electron-builder-cache/
+
+# Runtime data
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Dependency directories
+jspm_packages/
