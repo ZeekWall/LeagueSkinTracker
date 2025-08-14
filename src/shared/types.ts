@@ -109,17 +109,6 @@ export interface ChampionCardProps {
   onToggleShard: (id: number) => void;
 }
 
-export interface FilterBarProps {
-  activeFilter: FilterType;
-  onFilterChange: (filter: FilterType) => void;
-  championCount: number;
-}
-
-export interface SearchBarProps {
-  searchQuery: string;
-  onSearchChange: (query: string) => void;
-  onClearSearch: () => void;
-}
 
 export interface ProgressBarProps {
   statistics: AppStatistics;

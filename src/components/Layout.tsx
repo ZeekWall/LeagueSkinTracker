@@ -3,9 +3,10 @@ import React from 'react';
 interface LayoutProps {
   children: React.ReactNode;
   onUpdateChampions?: () => void;
+  isUpdating?: boolean;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, onUpdateChampions }) => {
+const Layout: React.FC<LayoutProps> = ({ children, onUpdateChampions, isUpdating = false }) => {
   return (
     <div className="h-screen w-screen bg-league-bg-primary text-league-text-primary overflow-hidden">
       {/* Compact App Header */}
@@ -20,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children, onUpdateChampions }) => {
             {/* App Title */}
             <div>
               <h1 className="text-sm font-bold text-league-text-primary">
-                LoL Skin Tracker <span className="text-xs font-normal text-league-text-secondary">v1.0</span>
+                LoL Skin Tracker <span className="text-xs font-normal text-league-text-secondary">v2.0</span>
               </h1>
               <div className="text-xs text-league-text-secondary" id="debug-info">
                 Loading...
@@ -32,17 +33,20 @@ const Layout: React.FC<LayoutProps> = ({ children, onUpdateChampions }) => {
           <button
             onClick={onUpdateChampions}
             className="
-              px-2 py-1 text-xs font-medium rounded
+              px-2 py-1 text-xs font-medium rounded flex items-center gap-1
               bg-league-bg-secondary text-league-text-primary
               border border-league-gold/30 hover:border-league-gold
               hover:bg-league-gold/10 transition-all duration-200
               focus:outline-none focus:ring-1 focus:ring-league-gold/20
               disabled:opacity-50 disabled:cursor-not-allowed
             "
-            title="Update champion data from CommunityDragon"
-            disabled={!onUpdateChampions}
+            title="Update champion data from DataDragon API"
+            disabled={!onUpdateChampions || isUpdating}
           >
-            Update
+            {isUpdating && (
+              <div className="w-3 h-3 border border-league-gold/60 border-t-league-gold rounded-full animate-spin"></div>
+            )}
+            {isUpdating ? 'Updating...' : 'Update'}
           </button>
         </div>
       </header>

@@ -52,6 +52,9 @@ const ChampionCard: React.FC<ChampionCardProps> = ({
         ${getBorderClass()}
       `}
       title={`${champion.name} - ${champion.title}`}
+      data-testid="champion-card"
+      data-champion-id={champion.id}
+      data-champion-name={champion.name}
     >
       {/* Champion Portrait */}
       <div className="relative mb-3">
@@ -121,6 +124,8 @@ const ChampionCard: React.FC<ChampionCardProps> = ({
             }
           `}
           title={hasSkin ? 'Remove skin' : 'Add skin'}
+          data-testid="skin-button"
+          data-champion-id={champion.id}
         >
           Skin
         </button>
@@ -137,6 +142,8 @@ const ChampionCard: React.FC<ChampionCardProps> = ({
             }
           `}
           title={hasShard ? 'Remove shard' : 'Add shard'}
+          data-testid="shard-button"
+          data-champion-id={champion.id}
         >
           Shard
         </button>

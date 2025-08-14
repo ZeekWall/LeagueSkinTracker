@@ -1,6 +1,6 @@
 {
   "name": "lol-skin-tracker",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "main": "build/electron/main.js",
   "homepage": "./",
   "private": true,
@@ -31,7 +31,13 @@
     "electron": "wait-on http://localhost:3000 && cross-env NODE_ENV=development electron .",
     "electron-dev": "concurrently \"npm start\" \"npm run electron\"",
     "build-electron": "npm run build && tsc electron/main.ts --outDir build/electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop",
-    "dist": "npm run build-electron && electron-builder"
+    "dist": "npm run build-electron && electron-builder",
+    "dist:portable": "npm run build-electron && electron-builder --win portable",
+    "test:e2e": "npm run build-electron && npx playwright test",
+    "test:e2e:ui": "npm run build-electron && npx playwright test --ui",
+    "test:e2e:debug": "npm run build-electron && npx playwright test --debug",
+    "mcp:start": "node mcp-server.js",
+    "mcp:test": "npm run build-electron && node mcp-server.js"
   },
   "eslintConfig": {
     "extends": [
@@ -51,11 +57,39 @@
       "last 1 safari version"
     ]
   },
+  "build": {
+    "appId": "com.lolskintracker.app",
+    "productName": "LoL Skin Tracker",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "build/**/*",
+      "node_modules/**/*",
+      "!node_modules/fsevents/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "artifactName": "${productName}-v${version}-${arch}.${ext}"
+    },
+    "compression": "maximum",
+    "removePackageScripts": true
+  },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.2",
+    "@playwright/test": "^1.54.2",
     "concurrently": "^9.2.0",
     "cross-env": "^10.0.0",
     "electron": "^37.2.6",
     "electron-builder": "^26.0.12",
+    "playwright": "^1.54.2",
     "tailwindcss": "^3.4.17",
     "wait-on": "^8.0.4"
   }

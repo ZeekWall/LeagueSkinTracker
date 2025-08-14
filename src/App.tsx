@@ -3,8 +3,10 @@ import Layout from './components/Layout';
 import ProgressBar from './components/ProgressBar';
 import FilterSearchBar from './components/FilterSearchBar';
 import ChampionGrid from './components/ChampionGrid';
+import Toast from './components/Toast';
 import { championApi } from './services/championApi';
 import { browserDataStore as dataStore } from './services/browserDataStore';
+import { useToast } from './hooks/useToast';
 import { ChampionData, ChampionCollection, FilterType, AppStatistics } from './shared/types';
 
 const App: React.FC = () => {
@@ -17,6 +19,9 @@ const App: React.FC = () => {
   // Filter and search state
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  
+  // Toast notifications
+  const { toasts, showSuccess, showError, removeToast } = useToast();
 
   // Initialize app data
   useEffect(() => {
@@ -181,18 +186,27 @@ const App: React.FC = () => {
       setLoading(true);
       setError(null);
       
+      const previousCount = champions.length;
       const updatedChampions = await championApi.refreshChampions();
       setChampions(updatedChampions);
       dataStore.saveCachedChampions(updatedChampions);
+      
+      const newChampions = updatedChampions.length - previousCount;
+      if (newChampions > 0) {
+        showSuccess(`✨ Updated! Found ${newChampions} new champion${newChampions === 1 ? '' : 's'}`, 4000);
+      } else {
+        showSuccess(`🔄 Champion data updated! (${updatedChampions.length} total)`, 3000);
+      }
       
       console.log(`🔄 Updated with ${updatedChampions.length} champions from API`);
     } catch (err) {
       console.error('Failed to update champions:', err);
       setError('Failed to update champion data');
+      showError('Failed to update champion data. Check your internet connection.', 5000);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [champions.length, showSuccess, showError]);
 
   // Show error state
   if (error && !loading) {
@@ -267,7 +281,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <Layout onUpdateChampions={handleUpdateChampions}>
+    <Layout onUpdateChampions={handleUpdateChampions} isUpdating={loading && champions.length > 0}>
       {/* Progress Bar */}
       <ProgressBar statistics={statistics} />
 
@@ -295,6 +309,17 @@ const App: React.FC = () => {
           {error}
         </div>
       )}
+
+      {/* Toast Notifications */}
+      {toasts.map(toast => (
+        <Toast
+          key={toast.id}
+          message={toast.message}
+          type={toast.type}
+          duration={toast.duration}
+          onClose={() => removeToast(toast.id)}
+        />
+      ))}
     </Layout>
   );
 };

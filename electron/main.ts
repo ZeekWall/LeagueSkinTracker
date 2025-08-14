@@ -16,7 +16,7 @@ function createWindow(): void {
     backgroundColor: '#0A0E1A',
     titleBarStyle: 'default',
     show: false,
-    title: 'LoL Skin Tracker v1.0',
+    title: 'LoL Skin Tracker v2.0',
     resizable: true,
     minimizable: true,
     maximizable: true,
@@ -42,7 +42,7 @@ function createWindow(): void {
     mainWindow.show();
     
     // Ensure title is set
-    mainWindow.setTitle('LoL Skin Tracker v1.0');
+    mainWindow.setTitle('LoL Skin Tracker v2.0');
     
     if (isDev) {
       mainWindow.webContents.openDevTools();

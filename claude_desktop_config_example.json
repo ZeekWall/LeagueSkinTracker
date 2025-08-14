@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "lol-skin-tracker-testing": {
+      "command": "node",
+      "args": ["mcp-server.js"],
+      "cwd": "C:\\Users\\zwall\\Desktop\\Coding\\LeagueApp\\lol-skin-tracker",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    }
+  }
+}
