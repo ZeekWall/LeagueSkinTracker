@@ -175,6 +175,18 @@ export class AnalyticsService {
       event_category: 'app_lifecycle'
     });
   }
+
+  /**
+   * Track Ko-Fi donate button clicks
+   */
+  trackDonateClick(): void {
+    if (!this.isEnabled) return;
+    
+    window.gtag('event', 'donate_button_click', {
+      platform: 'ko-fi',
+      event_category: 'support'
+    });
+  }
 }
 
 export const analytics = AnalyticsService.getInstance();
