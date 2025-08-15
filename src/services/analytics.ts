@@ -42,7 +42,8 @@ export class AnalyticsService {
         console.warn('3. Script loading problems');
         
         // For development, create a mock gtag for testing
-        if (import.meta.env.DEV) {
+        const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+        if (isDev) {
           console.log('🔧 Creating mock gtag for development testing');
           window.gtag = (...args: any[]) => {
             console.log('📊 Mock GA Event:', args);
