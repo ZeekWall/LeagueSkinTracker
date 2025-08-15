@@ -34,20 +34,12 @@ export class ChampionApiService {
       const latestVersion = versionResponse.data[0];
       
       // Then get champion data
-      let championUrl = API_CONFIG.CHAMPION_DATA_URL.replace('{version}', latestVersion);
-      
-      // Apply CORS proxy for production
-      const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-      if (!isDev) {
-        championUrl = API_CONFIG.CORS_PROXY + encodeURIComponent(championUrl);
-      }
+      const championUrl = API_CONFIG.CHAMPION_DATA_URL.replace('{version}', latestVersion);
       
       const response: AxiosResponse<DataDragonResponse> = await axios.get(
         championUrl,
         {
-          timeout: API_CONFIG.REQUEST_TIMEOUT,
-          // Remove User-Agent header for CORS proxy compatibility
-          headers: {}
+          timeout: API_CONFIG.REQUEST_TIMEOUT
         }
       );
 
@@ -64,8 +56,17 @@ export class ChampionApiService {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
+      console.error('Failed to fetch live champion data:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('API Error details:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          url: error.config?.url,
+          message: error.message
+        });
+      }
       const staticChampions = this.getStaticChampions();
-      this.updateDebugInfo('Static', staticChampions.length);
+      this.updateDebugInfo('Static Fallback', staticChampions.length);
       return staticChampions;
     }
   }

@@ -1,24 +1,13 @@
 import { ChampionData } from './types';
 
-// Check if we're in development mode
-const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-
-// Use CORS proxy for production GitHub Pages
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-
-// API Configuration
+// API Configuration - Use DataDragon directly (supports CORS)
 export const API_CONFIG = {
-  DATA_DRAGON_BASE: isDev ? '/api/ddragon' : 'https://ddragon.leagueoflegends.com',
-  VERSIONS_URL: isDev 
-    ? '/api/ddragon/api/versions.json' 
-    : CORS_PROXY + encodeURIComponent('https://ddragon.leagueoflegends.com/api/versions.json'),
-  CHAMPION_DATA_URL: isDev 
-    ? '/api/ddragon/cdn/{version}/data/en_US/champion.json' 
-    : 'https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/champion.json', // Don't encode template URL
-  REQUEST_TIMEOUT: 15000, // Increased for proxy
+  DATA_DRAGON_BASE: 'https://ddragon.leagueoflegends.com',
+  VERSIONS_URL: 'https://ddragon.leagueoflegends.com/api/versions.json',
+  CHAMPION_DATA_URL: 'https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/champion.json',
+  REQUEST_TIMEOUT: 10000, // Standard timeout
   RETRY_ATTEMPTS: 3,
   CACHE_DURATION: 1000 * 60 * 60, // 1 hour cache duration for champion data
-  CORS_PROXY, // Export proxy for runtime use
 } as const;
 
 // UI Constants
