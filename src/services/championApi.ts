@@ -65,6 +65,10 @@ export class ChampionApiService {
         
         console.log(`✅ Successfully fetched ${champions.length} champions from DataDragon API`);
         console.log('📊 Sample champion data:', champions.slice(0, 3));
+        
+        // Update debug info in UI
+        this.updateDebugInfo(latestVersion, champions.length);
+        
         return champions;
       } else {
         throw new Error('Invalid API response format');
@@ -75,7 +79,12 @@ export class ChampionApiService {
       console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
       console.warn('📋 FALLBACK: Using static champion list with', this.getStaticChampions().length, 'champions');
       console.warn('⚠️ This means champion portraits and new champions will be missing!');
-      return this.getStaticChampions();
+      
+      const staticChampions = this.getStaticChampions();
+      // Update debug info for fallback
+      this.updateDebugInfo('Static', staticChampions.length);
+      
+      return staticChampions;
     }
   }
 
@@ -165,6 +174,20 @@ export class ChampionApiService {
       cacheAge,
       isExpired: cacheAge > this.CACHE_DURATION
     };
+  }
+
+  /**
+   * Update debug info display in the UI
+   */
+  private updateDebugInfo(version: string, championCount: number): void {
+    try {
+      const debugElement = document.getElementById('debug-info');
+      if (debugElement) {
+        debugElement.textContent = `DataDragon v${version} • ${championCount} champions`;
+      }
+    } catch (error) {
+      console.warn('Failed to update debug info:', error);
+    }
   }
 }
 

@@ -21,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children, onUpdateChampions, isUpdating
             {/* App Title */}
             <div>
               <h1 className="text-sm font-bold text-league-text-primary">
-                LoL Skin Tracker <span className="text-xs font-normal text-league-text-secondary">v2.0</span>
+                LoL Skin Tracker <span className="text-xs font-normal text-league-text-secondary">v3.0</span>
               </h1>
               <div className="text-xs text-league-text-secondary" id="debug-info">
                 Loading...

@@ -238,6 +238,6 @@ export const STORAGE_KEYS = {
 // Application metadata
 export const APP_INFO = {
   NAME: 'LoL Skin Tracker',
-  VERSION: '1.0.0',
+  VERSION: '3.0.0',
   DESCRIPTION: 'Track your League of Legends skin collection',
 } as const;
