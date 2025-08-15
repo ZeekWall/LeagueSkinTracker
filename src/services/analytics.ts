@@ -141,7 +141,12 @@ export class AnalyticsService {
     if (!this.isEnabled) return;
     
     const milestones = [10, 25, 50, 75, 90, 95, 100];
-    const milestone = milestones.find(m => percentage >= m && percentage < m + 1);
+    
+    // Find the highest milestone that has been reached
+    // Use Math.floor to handle floating point precision issues
+    const roundedPercentage = Math.floor(percentage);
+    const milestone = milestones.find(m => roundedPercentage >= m && roundedPercentage < m + 10) ||
+                     (roundedPercentage >= 100 ? 100 : null);
     
     if (milestone) {
       window.gtag('event', 'collection_milestone', {

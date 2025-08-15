@@ -17,6 +17,7 @@ export const API_CONFIG = {
     : 'https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/champion.json', // Don't encode template URL
   REQUEST_TIMEOUT: 15000, // Increased for proxy
   RETRY_ATTEMPTS: 3,
+  CACHE_DURATION: 1000 * 60 * 60, // 1 hour cache duration for champion data
   CORS_PROXY, // Export proxy for runtime use
 } as const;
 

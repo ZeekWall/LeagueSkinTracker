@@ -27,13 +27,16 @@ const ChampionGrid: React.FC<ChampionGridProps> = ({
   }, [champions, collection, onToggleSkin, onToggleShard]);
 
   // Show loading state if no champions
+  // Show "No champions found" message for empty results (filtering)
   if (!champions || champions.length === 0) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-league-gold border-t-transparent mb-4"></div>
-          <p className="text-league-text-primary text-lg">Loading champions...</p>
-          <p className="text-league-text-secondary text-sm">Fetching data from CommunityDragon</p>
+          <div className="text-6xl mb-4">🔍</div>
+          <p className="text-league-text-primary text-lg mb-2">No champions found</p>
+          <p className="text-league-text-secondary text-sm">
+            Try adjusting your filters or search terms
+          </p>
         </div>
       </div>
     );
@@ -46,19 +49,6 @@ const ChampionGrid: React.FC<ChampionGridProps> = ({
         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-7 xl:grid-cols-8 2xl:grid-cols-10 gap-4 pb-4">
           {championCards}
         </div>
-        
-        {/* Show message if no champions match current filters */}
-        {champions.length === 0 && (
-          <div className="flex items-center justify-center h-64">
-            <div className="text-center">
-              <div className="text-6xl mb-4">🔍</div>
-              <p className="text-league-text-primary text-lg mb-2">No champions found</p>
-              <p className="text-league-text-secondary text-sm">
-                Try adjusting your filters or search terms
-              </p>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

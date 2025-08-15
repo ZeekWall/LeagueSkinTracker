@@ -9,7 +9,6 @@ export class ChampionApiService {
   private static instance: ChampionApiService;
   private cachedChampions: ChampionData[] | null = null;
   private lastFetchTime: number = 0;
-  private readonly CACHE_DURATION = 1000 * 60 * 60; // 1 hour
 
   private constructor() {}
 
@@ -26,7 +25,7 @@ export class ChampionApiService {
   async fetchChampions(): Promise<ChampionData[]> {
     try {
       // Return cached data if still fresh
-      if (this.cachedChampions && (Date.now() - this.lastFetchTime) < this.CACHE_DURATION) {
+      if (this.cachedChampions && (Date.now() - this.lastFetchTime) < API_CONFIG.CACHE_DURATION) {
         return this.cachedChampions;
       }
       
@@ -133,7 +132,7 @@ export class ChampionApiService {
    */
   hasFreshCache(): boolean {
     return this.cachedChampions !== null && 
-           (Date.now() - this.lastFetchTime) < this.CACHE_DURATION;
+           (Date.now() - this.lastFetchTime) < API_CONFIG.CACHE_DURATION;
   }
 
   /**
@@ -152,7 +151,7 @@ export class ChampionApiService {
     return {
       hasCachedData: this.cachedChampions !== null,
       cacheAge,
-      isExpired: cacheAge > this.CACHE_DURATION
+      isExpired: cacheAge > API_CONFIG.CACHE_DURATION
     };
   }
 

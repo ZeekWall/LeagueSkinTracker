@@ -2,6 +2,15 @@ import { ChampionCollection, StoredData, ChampionData, AppStatistics } from '../
 import { STORAGE_KEYS, APP_INFO } from '../shared/constants';
 
 /**
+ * Application settings interface
+ */
+interface AppSettings {
+  version: string;
+  firstRun: boolean;
+  autoUpdate: boolean;
+}
+
+/**
  * Browser-compatible data store service using localStorage
  * This is used when running in the browser without Electron
  */
@@ -248,11 +257,17 @@ export class BrowserDataStoreService {
   /**
    * Get settings
    */
-  getSettings(): any {
+  getSettings(): AppSettings {
     try {
       const stored = localStorage.getItem(STORAGE_KEYS.SETTINGS);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored);
+        // Ensure all required properties exist with proper types
+        return {
+          version: parsed.version || APP_INFO.VERSION,
+          firstRun: parsed.firstRun !== undefined ? Boolean(parsed.firstRun) : true,
+          autoUpdate: parsed.autoUpdate !== undefined ? Boolean(parsed.autoUpdate) : true,
+        };
       }
       return {
         version: APP_INFO.VERSION,
@@ -271,10 +286,11 @@ export class BrowserDataStoreService {
   /**
    * Update settings
    */
-  updateSettings(settings: any): void {
+  updateSettings(settings: AppSettings): void {
     try {
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
     } catch (error) {
+      // Silently fail settings update
     }
   }
 }

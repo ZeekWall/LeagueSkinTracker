@@ -65,12 +65,24 @@ const ChampionCard: React.FC<ChampionCardProps> = ({
             className="w-24 h-24 rounded object-cover bg-league-bg-secondary"
             onError={(e) => {
               // Fallback to initials if image fails to load
-              (e.target as HTMLImageElement).style.display = 'none';
-              (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+              const imgElement = e.target as HTMLImageElement;
+              if (imgElement) {
+                imgElement.style.display = 'none';
+                const nextElement = imgElement.nextElementSibling;
+                if (nextElement && nextElement.classList) {
+                  nextElement.classList.remove('hidden');
+                }
+              }
             }}
             onLoad={(e) => {
               // Hide initials when image loads successfully
-              (e.target as HTMLImageElement).nextElementSibling?.classList.add('hidden');
+              const imgElement = e.target as HTMLImageElement;
+              if (imgElement) {
+                const nextElement = imgElement.nextElementSibling;
+                if (nextElement && nextElement.classList) {
+                  nextElement.classList.add('hidden');
+                }
+              }
             }}
           />
         ) : null}

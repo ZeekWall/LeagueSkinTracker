@@ -271,7 +271,7 @@ const App: React.FC = () => {
     );
   }
 
-  // Show loading state
+  // Show loading state only when actually loading and we don't have any champions loaded yet
   if (loading && champions.length === 0) {
     return (
       <Layout>
