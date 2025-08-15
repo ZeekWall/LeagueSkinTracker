@@ -1,25 +1,46 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { resolve } from 'path'
 
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: process.env.NODE_ENV === 'production' ? '/LeagueSkinTracker/' : '/',
   build: {
     outDir: 'build',
     emptyOutDir: true,
+    sourcemap: false,
+    minify: 'terser',
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html')
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          api: ['axios']
+        }
       }
     }
   },
   server: {
     port: 5173,
-    strictPort: true
+    strictPort: true,
+    host: true,
+    proxy: {
+      '/api/ddragon': {
+        target: 'https://ddragon.leagueoflegends.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/ddragon/, ''),
+        secure: true,
+        headers: {
+          'User-Agent': 'LoL-Skin-Tracker/2.0.0'
+        }
+      }
+    }
+  },
+  preview: {
+    port: 4173,
+    strictPort: true,
+    host: true
   },
   optimizeDeps: {
-    include: ['react', 'react-dom']
+    include: ['react', 'react-dom', 'axios']
   },
   css: {
     postcss: './postcss.config.js'

@@ -1,136 +1,144 @@
-# LoL Skin Tracker v2.0 - Development Guide
+# LoL Skin Tracker v2.0 - Web Application
 
-## 🚀 Modern Build System (Updated August 2024)
+## 🌐 Modern Web Application (Updated August 2024)
 
-This project has been **completely modernized** from Create React App to **Vite + TypeScript 5**:
+This project has been **converted from Electron to a pure web application**:
 
 ### Key Changes:
-- ✅ **Replaced react-scripts** with Vite 6 (much faster builds)
-- ✅ **Updated to React 18** and TypeScript 5
-- ✅ **Eliminated 100+ deprecated packages**
-- ✅ **Node.js 20+ compatibility** (was 18.x)
-- ✅ **Modern Electron 32** (was 37.x)
+- ✅ **Removed all Electron dependencies** (electron, electron-builder, etc.)
+- ✅ **Pure React 18 + Vite 6** web application
+- ✅ **Google Analytics 4** integration for user tracking
+- ✅ **Vercel-ready deployment** configuration
+- ✅ **localStorage-based data persistence** (no desktop storage needed)
+- ✅ **Modern build system** optimized for web deployment
 
-## 🛠️ Build Commands (Updated)
+## 🛠️ Build Commands
 
 ### Development:
 ```bash
-# Install dependencies (skip problematic electron scripts)
-npm install --ignore-scripts
+# Install dependencies
+npm install
 
-# Start Vite dev server (port 5173, not 3000)
-npm start
+# Start development server (localhost:5173)
+npm run dev
 
-# Run Electron + React together
-npm run electron-dev
+# Preview production build
+npm run preview
 ```
 
 ### Production Build:
 ```bash
-# Option 1: Use npm scripts
-npm run build                    # Build React with Vite
-npm run build-electron          # Build React + compile Electron main
-npm run dist:portable           # Create Windows portable exe
+# Build for deployment
+npm run build
 
-# Option 2: Use PowerShell script (recommended)
-powershell -ExecutionPolicy Bypass -File build-portable.ps1
-
-# Option 3: Manual steps (if PATH issues)
-./node_modules/.bin/vite build
-./node_modules/.bin/tsc electron/main.ts --outDir build/electron --target es2020 --module commonjs --moduleResolution node --esModuleInterop
-./node_modules/.bin/electron-builder --win portable
+# Deploy to Vercel (after connecting repository)
+npm run deploy
 ```
 
 ### Output:
-- **React build**: `build/` directory
-- **Portable executable**: `dist/LoL Skin Tracker-v2.0.0-x64.exe` (73MB)
+- **Web build**: `build/` directory
+- **Ready for**: Vercel, Netlify, GitHub Pages, or any static hosting
 
-## 🧪 MCP Server Configuration
+## 🌐 Deployment
 
-This project includes an MCP server for automated Playwright testing.
+### Vercel Deployment:
+1. Connect your GitHub repository to Vercel
+2. Vercel will automatically detect the Vite configuration
+3. Build command: `npm run build`
+4. Output directory: `build`
+5. Framework preset: Vite
 
-### Available MCP Tools:
-- `run_playwright_test` - Execute Playwright tests
-- `interact_with_app` - Direct app interaction 
-- `launch_app` - Start the Electron app
-- `close_app` - Close the app
-
-### To activate MCP tools:
+### Manual Deployment:
 ```bash
-npm run mcp:start
+npm run build
+# Upload contents of build/ directory to your web server
 ```
 
-### MCP Server Details:
-- **Server Name**: lol-skin-tracker-testing
-- **Command**: `node mcp-server.js`
-- **Working Directory**: Current project root
-- **Port**: stdio (standard input/output)
+## 📊 Analytics
 
-## 🧪 Testing Commands:
-```bash
-npm run test:e2e              # Run all Playwright tests
-npm run test:e2e:ui           # Run tests with UI
-npm run test:e2e:debug        # Debug mode
-npm run mcp:test              # Build and start MCP server
-```
+### Google Analytics 4 Integration:
+- **Tracking ID**: G-N22E7N1BGL
+- **Events tracked**:
+  - Skin toggles (champion name, new state)
+  - Shard toggles (champion name, new state)
+  - Search usage (search terms)
+  - Filter changes (filter type)
+  - Champion data updates
+  - Collection milestones (10%, 25%, 50%, 75%, 90%, 95%, 100%)
+  - App initialization stats
 
 ## 📁 Project Structure:
 ```
 ├── src/                      # React source (TypeScript)
 │   ├── components/           # React components
 │   ├── hooks/               # Custom hooks
-│   ├── services/            # API and data services
+│   ├── services/            # API, data, and analytics services
 │   └── shared/              # Types and constants
-├── electron/                # Electron main process
-│   ├── main.ts              # Main process entry
-│   └── dataStore.ts         # Data persistence
-├── tests/                   # Playwright E2E tests
-│   ├── electron/            # Electron-specific tests
-│   └── utils/               # Test utilities and fixtures
 ├── public/                  # Static assets
 ├── build/                   # Vite build output
-├── dist/                    # Electron-builder output
 ├── vite.config.ts           # Vite configuration
-├── playwright.config.ts     # Playwright configuration
-├── mcp-server.js           # MCP server for Claude integration
-└── build-portable.ps1      # Reliable build script
+├── vercel.json             # Vercel deployment config
+└── package.json            # Web-only dependencies
 ```
 
-## 🔧 Tech Stack (Updated):
+## 🔧 Tech Stack:
 - **Frontend**: React 18.3, TypeScript 5.7
-- **Build Tool**: Vite 6.0 (replaces react-scripts)
-- **Desktop**: Electron 32.2
-- **Testing**: Playwright 1.54
+- **Build Tool**: Vite 6.0
 - **Styling**: Tailwind CSS 3.4
-- **Data**: Electron Store 8.2, Axios 1.11
+- **Data Storage**: Browser localStorage
+- **API**: League of Legends DataDragon (public CDN)
+- **Analytics**: Google Analytics 4
+- **Deployment**: Vercel/Netlify/Static hosting
 
 ## 🚨 Common Issues & Solutions:
 
-### Node.js PATH Issues:
-If you get `'node' is not recognized` errors during npm install:
+### Build Issues:
 ```bash
-# Use this instead of regular npm install:
-npm install --ignore-scripts
-
-# Then build manually:
-./node_modules/.bin/vite build
+# If build fails, try cleaning first:
+rm -rf build node_modules
+npm install
+npm run build
 ```
 
-### Windows Build Issues:
-- **Icon errors**: Use 256x256+ icons only
-- **Permission errors**: Run PowerShell as Administrator if needed
-- **PATH issues**: Use the PowerShell build script
+### Development Server:
+- **Port**: 5173 (Vite default)
+- **Host**: Accessible on network with `npm run dev`
+- **Hot reload**: Automatic with Vite
 
-### Electron Store Compatibility:
-- **Updated to v8.2.0** (was v10.x) for Node.js compatibility
-- Data format remains the same
+### Analytics Testing:
+- Visit Google Analytics → Reports → Realtime
+- Interact with the app (toggle skins, search, filter)
+- Events appear within 1-2 minutes
 
 ## 📝 Build Notes for Claude:
 
-When building this project, always:
-1. ✅ Use `npm install --ignore-scripts` first
-2. ✅ Use direct node_modules paths if npm scripts fail
-3. ✅ Update the dev server port (5173, not 3000)
-4. ✅ Run `npm run dist:portable` for the final executable
+When working with this project:
+1. ✅ Use `npm install` (no more --ignore-scripts needed)
+2. ✅ Use `npm run dev` for development
+3. ✅ Use `npm run build` for production builds
+4. ✅ All data persists in browser localStorage
+5. ✅ No desktop-specific code remains
 
-The modernization eliminates the react-scripts bloat and makes builds much more reliable!
+The web conversion eliminates Electron complexity while maintaining all functionality!
+
+## 🔄 Migration Notes:
+
+**What was removed:**
+- Electron main process
+- Desktop window management
+- File system dependencies
+- Playwright E2E tests
+- MCP server integration
+
+**What was preserved:**
+- All React components and UI
+- Champion data fetching from DataDragon API
+- User collection persistence (localStorage)
+- Search and filter functionality
+- Progress tracking and statistics
+
+**What was added:**
+- Google Analytics 4 tracking
+- Vercel deployment configuration
+- Web-optimized Vite build
+- Modern chunk splitting for performance

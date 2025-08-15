@@ -6,6 +6,7 @@ import ChampionGrid from './components/ChampionGrid';
 import Toast from './components/Toast';
 import { championApi } from './services/championApi';
 import { browserDataStore as dataStore } from './services/browserDataStore';
+import { analytics } from './services/analytics';
 import { useToast } from './hooks/useToast';
 import { ChampionData, ChampionCollection, FilterType, AppStatistics } from './shared/types';
 
@@ -43,11 +44,8 @@ const App: React.FC = () => {
 
         console.log(`🎮 App initialized with ${championData.length} champions total`);
         
-        // Update debug info in UI
-        const debugInfo = document.getElementById('debug-info');
-        if (debugInfo) {
-          debugInfo.textContent = `${championData.length} champions loaded`;
-        }
+        // Track app initialization
+        analytics.trackAppInit(championData.length, Object.keys(savedCollection).length);
       } catch (err) {
         console.error('Failed to initialize app:', err);
         setError('Failed to load champion data. Please try again.');
@@ -62,6 +60,7 @@ const App: React.FC = () => {
   // Toggle skin ownership for a champion
   const handleToggleSkin = useCallback((championId: number) => {
     try {
+      const champion = champions.find(c => c.id === championId);
       const newHasSkin = dataStore.toggleSkinOwnership(championId);
       
       setCollection(prev => ({
@@ -73,16 +72,22 @@ const App: React.FC = () => {
         }
       }));
 
+      // Track skin toggle event
+      if (champion) {
+        analytics.trackSkinToggle(champion.name, newHasSkin);
+      }
+
       console.log(`Toggled skin for champion ${championId}: ${newHasSkin}`);
     } catch (err) {
       console.error('Failed to toggle skin ownership:', err);
       setError('Failed to update skin status');
     }
-  }, []);
+  }, [champions]);
 
   // Toggle shard ownership for a champion
   const handleToggleShard = useCallback((championId: number) => {
     try {
+      const champion = champions.find(c => c.id === championId);
       const newHasShard = dataStore.toggleShardOwnership(championId);
       
       setCollection(prev => ({
@@ -93,6 +98,11 @@ const App: React.FC = () => {
           lastModified: new Date().toISOString()
         }
       }));
+
+      // Track shard toggle event
+      if (champion) {
+        analytics.trackShardToggle(champion.name, newHasShard);
+      }
 
       console.log(`Toggled shard for champion ${championId}: ${newHasShard}`);
     } catch (err) {
@@ -155,7 +165,7 @@ const App: React.FC = () => {
 
     const completionPercentage = totalChampions > 0 ? (skinsOwned / totalChampions) * 100 : 0;
 
-    return {
+    const stats = {
       totalChampions,
       skinsOwned,
       shardsOwned,
@@ -163,11 +173,20 @@ const App: React.FC = () => {
       shardsWithoutSkins,
       lastUpdated: new Date().toISOString()
     };
+
+    // Track collection progress milestones
+    analytics.trackCollectionProgress(stats.completionPercentage);
+
+    return stats;
   }, [champions, collection]);
 
   // Handle search change with debouncing
   const handleSearchChange = useCallback((query: string) => {
     setSearchQuery(query);
+    // Track search usage (only for non-empty queries)
+    if (query.trim()) {
+      analytics.trackSearch(query.trim());
+    }
   }, []);
 
   // Clear search
@@ -178,6 +197,8 @@ const App: React.FC = () => {
   // Handle filter change
   const handleFilterChange = useCallback((filter: FilterType) => {
     setActiveFilter(filter);
+    // Track filter usage
+    analytics.trackFilterChange(filter);
   }, []);
 
   // Handle update champions
@@ -197,6 +218,9 @@ const App: React.FC = () => {
       } else {
         showSuccess(`🔄 Champion data updated! (${updatedChampions.length} total)`, 3000);
       }
+      
+      // Track champion update
+      analytics.trackChampionUpdate(updatedChampions.length, Math.max(0, newChampions));
       
       console.log(`🔄 Updated with ${updatedChampions.length} champions from API`);
     } catch (err) {

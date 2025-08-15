@@ -64,8 +64,11 @@ export class ChampionApiService {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.warn('❌ Failed to fetch champions from API, falling back to static data:', error);
-      console.log('📋 Using static champion list with', this.getStaticChampions().length, 'champions');
+      console.error('❌ API ERROR - Failed to fetch champions from DataDragon API:');
+      console.error('Error details:', error);
+      console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
+      console.warn('📋 FALLBACK: Using static champion list with', this.getStaticChampions().length, 'champions');
+      console.warn('⚠️ This means champion portraits and new champions will be missing!');
       return this.getStaticChampions();
     }
   }

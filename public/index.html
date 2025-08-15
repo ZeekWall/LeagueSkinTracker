@@ -7,9 +7,24 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Track your League of Legends champion skin collection"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-N22E7N1BGL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-N22E7N1BGL', {
+        debug_mode: true,
+        send_page_view: true
+      });
+      
+      console.log('Google Analytics initialized with ID: G-N22E7N1BGL');
+    </script>
     <!--
       manifest.json provides metadata used when your web app is installed on a
       user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
@@ -24,7 +39,7 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>LoL Skin Tracker v1.0</title>
+    <title>LoL Skin Tracker v2.0</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>

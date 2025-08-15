@@ -2,9 +2,9 @@ import { ChampionData } from './types';
 
 // API Configuration
 export const API_CONFIG = {
-  DATA_DRAGON_BASE: 'https://ddragon.leagueoflegends.com',
-  VERSIONS_URL: 'https://ddragon.leagueoflegends.com/api/versions.json',
-  CHAMPION_DATA_URL: 'https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/champion.json',
+  DATA_DRAGON_BASE: import.meta.env.DEV ? '/api/ddragon' : 'https://ddragon.leagueoflegends.com',
+  VERSIONS_URL: import.meta.env.DEV ? '/api/ddragon/api/versions.json' : 'https://ddragon.leagueoflegends.com/api/versions.json',
+  CHAMPION_DATA_URL: import.meta.env.DEV ? '/api/ddragon/cdn/{version}/data/en_US/champion.json' : 'https://ddragon.leagueoflegends.com/cdn/{version}/data/en_US/champion.json',
   REQUEST_TIMEOUT: 10000,
   RETRY_ATTEMPTS: 3,
 } as const;
