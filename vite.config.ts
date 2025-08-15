@@ -29,7 +29,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/api\/ddragon/, ''),
         secure: true,
         headers: {
-          'User-Agent': 'LoL-Skin-Tracker/2.0.0'
+          'User-Agent': 'LoL-Skin-Tracker/3.0.0'
         }
       }
     }

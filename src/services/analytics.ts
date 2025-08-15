@@ -13,7 +13,6 @@ export class AnalyticsService {
   private isEnabled: boolean = false;
 
   private constructor() {
-    // Wait for gtag to load, check periodically
     this.waitForGtag();
   }
 
@@ -21,39 +20,19 @@ export class AnalyticsService {
     const checkGtag = () => {
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         this.isEnabled = true;
-        console.log('✅ Google Analytics loaded successfully');
-        
-        // Send a test event to verify analytics is working
-        setTimeout(() => {
-          this.sendTestEvent();
-        }, 1000);
-        
         return;
       }
       
-      // Check again after a short delay
       setTimeout(checkGtag, 100);
     };
 
-    // Start checking immediately
     checkGtag();
     
-    // Set a timeout to stop trying after 5 seconds
     setTimeout(() => {
       if (!this.isEnabled) {
-        console.warn('⚠️ Google Analytics failed to load after 5 seconds');
-        console.warn('This could be due to:');
-        console.warn('1. Ad blocker blocking Google Analytics');
-        console.warn('2. Network connectivity issues');
-        console.warn('3. Script loading problems');
-        
-        // For development, create a mock gtag for testing
         const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
         if (isDev) {
-          console.log('🔧 Creating mock gtag for development testing');
-          window.gtag = (...args: any[]) => {
-            console.log('📊 Mock GA Event:', args);
-          };
+          window.gtag = () => {};
           this.isEnabled = true;
         }
       }
@@ -68,7 +47,7 @@ export class AnalyticsService {
   }
 
   /**
-   * Track page views (automatic with GA4)
+   * Track page views
    */
   trackPageView(pageName: string): void {
     if (!this.isEnabled) return;
@@ -85,11 +64,9 @@ export class AnalyticsService {
   trackSkinToggle(championName: string, newState: boolean): void {
     if (!this.isEnabled) return;
     
-    console.log('📊 Tracking skin toggle:', championName, newState ? 'owned' : 'not_owned');
-    
     window.gtag('event', 'skin_toggle', {
-      custom_parameter_champion_name: championName,
-      custom_parameter_new_state: newState ? 'owned' : 'not_owned',
+      champion_name: championName,
+      new_state: newState ? 'owned' : 'not_owned',
       event_category: 'collection'
     });
   }
@@ -112,8 +89,6 @@ export class AnalyticsService {
    */
   trackSearch(searchQuery: string): void {
     if (!this.isEnabled) return;
-    
-    console.log('📊 Tracking search:', searchQuery);
     
     window.gtag('event', 'search', {
       search_term: searchQuery,
@@ -165,7 +140,6 @@ export class AnalyticsService {
   trackCollectionProgress(percentage: number): void {
     if (!this.isEnabled) return;
     
-    // Only track major milestones to avoid spam
     const milestones = [10, 25, 50, 75, 90, 95, 100];
     const milestone = milestones.find(m => percentage >= m && percentage < m + 1);
     
@@ -195,31 +169,12 @@ export class AnalyticsService {
   trackAppInit(championCount: number, collectionSize: number): void {
     if (!this.isEnabled) return;
     
-    console.log('📊 Tracking app initialization:', championCount, 'champions,', collectionSize, 'in collection');
-    
     window.gtag('event', 'app_initialized', {
       champion_count: championCount,
       collection_size: collectionSize,
       event_category: 'app_lifecycle'
     });
   }
-
-  /**
-   * Send a test event to verify analytics is working
-   */
-  private sendTestEvent(): void {
-    if (!this.isEnabled) return;
-    
-    console.log('🧪 Sending test analytics event...');
-    
-    window.gtag('event', 'analytics_test', {
-      test_parameter: 'analytics_working',
-      event_category: 'debug'
-    });
-    
-    console.log('🧪 Test event sent! Check Google Analytics Real-time Events in 30-60 seconds.');
-  }
 }
 
-// Export singleton instance
 export const analytics = AnalyticsService.getInstance();

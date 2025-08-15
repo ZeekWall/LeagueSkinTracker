@@ -27,16 +27,12 @@ export class ChampionApiService {
     try {
       // Return cached data if still fresh
       if (this.cachedChampions && (Date.now() - this.lastFetchTime) < this.CACHE_DURATION) {
-        console.log('Returning cached champion data');
         return this.cachedChampions;
       }
-
-      console.log('🔄 Fetching champion data from DataDragon API...');
       
       // First get the latest version
       const versionResponse = await axios.get(API_CONFIG.VERSIONS_URL, { timeout: API_CONFIG.REQUEST_TIMEOUT });
       const latestVersion = versionResponse.data[0];
-      console.log('📡 Latest version:', latestVersion);
       
       // Then get champion data
       let championUrl = API_CONFIG.CHAMPION_DATA_URL.replace('{version}', latestVersion);
@@ -46,8 +42,6 @@ export class ChampionApiService {
       if (!isDev) {
         championUrl = API_CONFIG.CORS_PROXY + encodeURIComponent(championUrl);
       }
-      
-      console.log('📡 Champion URL:', championUrl);
       
       const response: AxiosResponse<DataDragonResponse> = await axios.get(
         championUrl,
@@ -63,9 +57,6 @@ export class ChampionApiService {
         this.cachedChampions = champions;
         this.lastFetchTime = Date.now();
         
-        console.log(`✅ Successfully fetched ${champions.length} champions from DataDragon API`);
-        console.log('📊 Sample champion data:', champions.slice(0, 3));
-        
         // Update debug info in UI
         this.updateDebugInfo(latestVersion, champions.length);
         
@@ -74,16 +65,8 @@ export class ChampionApiService {
         throw new Error('Invalid API response format');
       }
     } catch (error) {
-      console.error('❌ API ERROR - Failed to fetch champions from DataDragon API:');
-      console.error('Error details:', error);
-      console.error('Error message:', error instanceof Error ? error.message : 'Unknown error');
-      console.warn('📋 FALLBACK: Using static champion list with', this.getStaticChampions().length, 'champions');
-      console.warn('⚠️ This means champion portraits and new champions will be missing!');
-      
       const staticChampions = this.getStaticChampions();
-      // Update debug info for fallback
       this.updateDebugInfo('Static', staticChampions.length);
-      
       return staticChampions;
     }
   }
@@ -112,10 +95,7 @@ export class ChampionApiService {
    * Get static champion data as fallback
    */
   private getStaticChampions(): ChampionData[] {
-    console.log('📚 Using static champion data as fallback');
-    const staticChamps = [...STATIC_CHAMPIONS].sort((a, b) => a.name.localeCompare(b.name));
-    console.log('📊 Static champion count:', staticChamps.length);
-    return staticChamps;
+    return [...STATIC_CHAMPIONS].sort((a, b) => a.name.localeCompare(b.name));
   }
 
   /**
@@ -186,7 +166,7 @@ export class ChampionApiService {
         debugElement.textContent = `DataDragon v${version} • ${championCount} champions`;
       }
     } catch (error) {
-      console.warn('Failed to update debug info:', error);
+      // Silently fail debug info update
     }
   }
 }

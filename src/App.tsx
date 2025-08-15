@@ -221,10 +221,7 @@ const App: React.FC = () => {
       
       // Track champion update
       analytics.trackChampionUpdate(updatedChampions.length, Math.max(0, newChampions));
-      
-      console.log(`🔄 Updated with ${updatedChampions.length} champions from API`);
     } catch (err) {
-      console.error('Failed to update champions:', err);
       setError('Failed to update champion data');
       showError('Failed to update champion data. Check your internet connection.', 5000);
     } finally {
