@@ -39,16 +39,22 @@ export class ChampionApiService {
       console.log('📡 Latest version:', latestVersion);
       
       // Then get champion data
-      const championUrl = API_CONFIG.CHAMPION_DATA_URL.replace('{version}', latestVersion);
+      let championUrl = API_CONFIG.CHAMPION_DATA_URL.replace('{version}', latestVersion);
+      
+      // Apply CORS proxy for production
+      const isDev = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+      if (!isDev) {
+        championUrl = API_CONFIG.CORS_PROXY + encodeURIComponent(championUrl);
+      }
+      
       console.log('📡 Champion URL:', championUrl);
       
       const response: AxiosResponse<DataDragonResponse> = await axios.get(
         championUrl,
         {
           timeout: API_CONFIG.REQUEST_TIMEOUT,
-          headers: {
-            'User-Agent': 'LoL-Skin-Tracker/1.0.0',
-          }
+          // Remove User-Agent header for CORS proxy compatibility
+          headers: {}
         }
       );
 
