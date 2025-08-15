@@ -22,6 +22,12 @@ export class AnalyticsService {
       if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         this.isEnabled = true;
         console.log('✅ Google Analytics loaded successfully');
+        
+        // Send a test event to verify analytics is working
+        setTimeout(() => {
+          this.sendTestEvent();
+        }, 1000);
+        
         return;
       }
       
@@ -79,9 +85,11 @@ export class AnalyticsService {
   trackSkinToggle(championName: string, newState: boolean): void {
     if (!this.isEnabled) return;
     
+    console.log('📊 Tracking skin toggle:', championName, newState ? 'owned' : 'not_owned');
+    
     window.gtag('event', 'skin_toggle', {
-      champion_name: championName,
-      new_state: newState ? 'owned' : 'not_owned',
+      custom_parameter_champion_name: championName,
+      custom_parameter_new_state: newState ? 'owned' : 'not_owned',
       event_category: 'collection'
     });
   }
@@ -104,6 +112,8 @@ export class AnalyticsService {
    */
   trackSearch(searchQuery: string): void {
     if (!this.isEnabled) return;
+    
+    console.log('📊 Tracking search:', searchQuery);
     
     window.gtag('event', 'search', {
       search_term: searchQuery,
@@ -185,11 +195,29 @@ export class AnalyticsService {
   trackAppInit(championCount: number, collectionSize: number): void {
     if (!this.isEnabled) return;
     
+    console.log('📊 Tracking app initialization:', championCount, 'champions,', collectionSize, 'in collection');
+    
     window.gtag('event', 'app_initialized', {
       champion_count: championCount,
       collection_size: collectionSize,
       event_category: 'app_lifecycle'
     });
+  }
+
+  /**
+   * Send a test event to verify analytics is working
+   */
+  private sendTestEvent(): void {
+    if (!this.isEnabled) return;
+    
+    console.log('🧪 Sending test analytics event...');
+    
+    window.gtag('event', 'analytics_test', {
+      test_parameter: 'analytics_working',
+      event_category: 'debug'
+    });
+    
+    console.log('🧪 Test event sent! Check Google Analytics Real-time Events in 30-60 seconds.');
   }
 }
 
